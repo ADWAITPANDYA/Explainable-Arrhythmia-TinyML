@@ -16,26 +16,16 @@ A research and edge-deployment project for classifying ECG heartbeats using the 
 ```text
 RMS/
 ├── README.md
-├── LICENSE
-├── .gitignore
-├── requirements.txt
 ├── data/
-│   └── README.md                   # Dataset download/source instructions
-├── models/
-│   ├── README.md                   # Model provenance and expected files
+│   └── mit-bih-arrhythmia-database-1.0.0 .zip                   # Dataset
+├── models/                   # Model provenance and expected files
 │   ├── rms_arrhythmia_int8.tflite  # TinyML INT8 model
 │   └── RMS_FINAL_MODEL_PACKAGE.zip # Optional model package, if appropriate to publish
 ├── notebooks/
 │   ├── final_rms_model_2.ipynb
 │   ├── RMS_ESP32_TinyML_CNN_Colab.ipynb
 │   └── RMS_SHAP_MITBIH_Explainability.ipynb
-├── results/
-│   └── README.md                   # Optional metrics/predictions/plots
-└── docs/
-    └── README.md                   # Hardware and deployment notes
 ```
-
-The files shown above are the intended layout. Add the actual files you have verified; do not commit placeholder files in place of model artifacts.
 
 ## Project workflow
 
@@ -76,7 +66,6 @@ The model work uses the **MIT-BIH Arrhythmia Database**. Use the official Physio
 
 - https://physionet.org/content/mitdb/1.0.0/
 
-Prefer linking to the official dataset rather than mirroring the ZIP in this repository unless you have confirmed redistribution is permitted. If redistribution is permitted and you choose to include the archive, note the source, version, checksum, and license/terms in `data/README.md`. Avoid committing extracted records, generated caches, or patient-related data beyond what the dataset terms permit.
 
 ## Model files and limitations
 
@@ -87,7 +76,7 @@ Prefer linking to the official dataset rather than mirroring the ZIP in this rep
 
 ## Reproducibility
 
-Use the notebooks in `notebooks/` with Google Colab or a compatible Python environment. Install only the dependencies required by the notebook. A starter `requirements.txt` is included; pin versions after verifying a clean run.
+Use the notebooks in `notebooks/` with Google Colab or a compatible Python environment. Install only the dependencies required by the notebook.
 
 For a public release, record:
 - dataset version and citation;
@@ -96,13 +85,7 @@ For a public release, record:
 - per-class precision, recall, F1, confusion matrix, and overall metrics;
 - model size and quantization details;
 - hardware, firmware/runtime version, latency, and memory measurements if edge testing has actually been performed.
-
-Do not claim a target accuracy or on-device performance unless the corresponding experiment has been run and the results are included.
-
-## Suggested citation
-
-If you use the dataset, cite the official MIT-BIH Arrhythmia Database publication and PhysioNet resource as specified on the official dataset page. Add the project paper/preprint citation here when available.
-
+  
 ## License
 
 The code and project documentation can be licensed under the repository's chosen license. Dataset and third-party model/data rights are separate; a repository license does not override their terms. Review the license file and dataset conditions before publishing.
