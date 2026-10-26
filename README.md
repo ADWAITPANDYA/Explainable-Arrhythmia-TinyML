@@ -1,45 +1,83 @@
-# RMS — Explainable Arrhythmia Detection with TinyML
+# RMS v1 — Explainable Arrhythmia Detection with TinyML
 
-A research and edge-deployment project for classifying ECG heartbeats using the MIT-BIH Arrhythmia Database, with an explainability workflow and an INT8 TensorFlow Lite model intended for resource-constrained deployment.
+**An Explainable ECG Arrhythmia Classification Framework Using the MIT-BIH Arrhythmia Database, SHAP-Based Model Interpretation, and INT8 Quantization for Edge Deployment**
 
-> **Research prototype only.** This project is not a medical device and must not be used to diagnose, treat, or make clinical decisions. Model performance and hardware deployment must be independently validated before any real-world use.
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-TFLite-orange)](https://www.tensorflow.org/)
+[![Dataset](https://img.shields.io/badge/Dataset-MIT--BIH-green)](https://physionet.org/content/mitdb/1.0.0/)
+[![Explainability](https://img.shields.io/badge/Explainability-SHAP-purple)](https://shap.readthedocs.io/)
+[![Deployment](https://img.shields.io/badge/Edge%20AI-ESP32%20%7C%20Raspberry%20Pi-lightgrey)](https://www.espressif.com/)
 
-## Contents
+---
 
-- **RMS classifier:** the finalized trained model/package and training/evaluation notebook.
-- **TinyML export:** `rms_arrhythmia_int8.tflite`, a compact INT8 TensorFlow Lite model intended for ESP32-class deployment.
-- **Explainability:** `RMS_SHAP_MITBIH_Explainability.ipynb`, which evaluates the saved model and uses SHAP to inspect beat-level predictions.
-- **Dataset:** MIT-BIH Arrhythmia Database. See the dataset section before adding any dataset files to this public repository.
+## Overview
 
-## Repository structure
+**RMS** is a research project focused on ECG heartbeat classification, model explainability, and lightweight inference for resource-constrained edge devices.
+
+The framework uses the **MIT-BIH Arrhythmia Database** to develop and evaluate an arrhythmia classification model. It also incorporates SHAP-based explainability to investigate which portions of an ECG heartbeat contribute to model predictions and an INT8 TensorFlow Lite model for exploring TinyML deployment.
+
+### Key Components
+
+| Component | Purpose |
+|---|---|
+| **RMS Classifier** | Classifies ECG heartbeat segments into five AAMI-style heartbeat groups |
+| **MIT-BIH Dataset** | Provides ECG recordings and annotated heartbeats for model development and evaluation |
+| **SHAP Explainability** | Investigates feature contributions to individual model predictions |
+| **INT8 TinyML Model** | Provides a quantized TensorFlow Lite model for resource-constrained inference experiments |
+| **ESP32 Integration** | Targets deployment on an ESP32 development board, subject to runtime and resource compatibility |
+| **Raspberry Pi Integration** | Provides a potential edge-inference platform for model evaluation |
+
+The project combines classification, explainability, and model compression in an experimental ECG analysis pipeline. Hardware compatibility, inference performance, and clinical validity must be established through appropriate testing rather than assumed from model conversion or offline results.
+
+---
+
+## Features
+
+- ECG heartbeat classification using the MIT-BIH Arrhythmia Database
+- Five-class heartbeat categorization
+- Model training and evaluation through Google Colab notebooks
+- SHAP-based interpretation of model predictions
+- Prediction analysis and export of evaluation results
+- INT8 TensorFlow Lite model for lightweight inference experiments
+- ESP32-oriented TinyML model development
+- Raspberry Pi inference exploration
+- Reproducible experimentation through notebooks and saved model artifacts
+
+---
+
+## Project Structure
 
 ```text
-RMS/
+Explainable-Arrhythmia-TinyML/
 ├── README.md
-├── data/
-│   └── mit-bih-arrhythmia-database-1.0.0 .zip                   # Dataset
-├── models/                   # Model provenance and expected files
-│   ├── rms_arrhythmia_int8.tflite  # TinyML INT8 model
-│   └── RMS_FINAL_MODEL_PACKAGE.zip # Optional model package, if appropriate to publish
-├── notebooks/
-│   ├── final_rms_model_2.ipynb
-│   ├── RMS_ESP32_TinyML_CNN_Colab.ipynb
-│   └── RMS_SHAP_MITBIH_Explainability.ipynb
+├── dataset/
+│   └── mit-bih-arrhythmia-database-1.0.0.zip
+├── models/
+│   └── rms_arrhythmia_int8.tflite
+└── Notebooks/
+    ├── final_rms_model_2.ipynb
+    ├── RMS_ESP32_TinyML_CNN_Colab.ipynb
+    └── RMS_SHAP_MITBIH_Explainability.ipynb
 ```
 
-## Project workflow
+---
 
-1. **Prepare ECG data** from the official MIT-BIH Arrhythmia Database source.
-2. **Train/evaluate RMS** using the training notebook and documented preprocessing.
-3. **Export the TinyML model** as a TensorFlow Lite INT8 `.tflite` file.
-4. **Explain predictions** with the SHAP notebook using the saved model and test examples.
-5. **Validate deployment** on the target board, measuring inference correctness, latency, flash use, and RAM use.
+## Project Workflow
 
-## Output classes
+1. **Dataset preparation:** Load ECG recordings and annotations from the MIT-BIH Arrhythmia Database.
+2. **Preprocessing:** Prepare heartbeat segments using the preprocessing and normalization implemented in the training pipeline.
+3. **Model training and evaluation:** Train or load the RMS classifier and evaluate its predictions on the configured dataset split.
+4. **Explainability analysis:** Use SHAP to investigate the contributions of ECG input features to model predictions.
+5. **Model compression:** Convert the compatible model to TensorFlow Lite INT8 format for lightweight inference experiments.
+6. **Edge deployment:** Test the exported model on the intended hardware and measure prediction consistency, latency, memory use, and compatibility.
 
-The five AAMI-style heartbeat groups used in this project are:
+---
 
-| Label | Meaning |
+## Output Classes
+
+The model uses five heartbeat categories commonly associated with AAMI-style ECG classification.
+
+| Label | Description |
 |---|---|
 | `N` | Normal and other normal-like beats grouped into N |
 | `S` | Supraventricular ectopic beats |
@@ -47,45 +85,93 @@ The five AAMI-style heartbeat groups used in this project are:
 | `F` | Fusion beats |
 | `Q` | Unknown, paced, or otherwise unclassifiable beats grouped into Q |
 
-Confirm that the class mapping in the published model, notebook, and inference code is identical before release.
 
-## Explainability
+---
 
-The notebook `notebooks/RMS_SHAP_MITBIH_Explainability.ipynb` is intended to:
+## Explainability with SHAP
 
-- load the saved RMS/TFLite model and the matching evaluation samples;
-- calculate or inspect predictions without retraining the model;
-- use SHAP to estimate which portions of an ECG beat contribute to the model output;
-- save explanation artifacts such as plots and prediction tables where configured.
+The notebook `RMS_SHAP_MITBIH_Explainability.ipynb` provides the explainability workflow for inspecting RMS predictions.
 
-SHAP explanations describe model behavior; they do not establish clinical validity or causality. Include the exact SHAP explainer, background/reference sample strategy, preprocessing, and class mapping in the notebook when publishing.
+The workflow is intended to:
+
+- Load the saved model and compatible evaluation samples.
+- Generate predictions for ECG heartbeat segments.
+- Apply SHAP to investigate which input features contribute to the model's output.
+- Examine explanations for selected predictions and heartbeat classes.
+- Export prediction results and explanation artifacts where configured.
+
+SHAP explanations help describe the behavior of a trained model. They do not establish physiological causality, clinical validity, or diagnostic reliability.
+
+For reproducibility, document the explainer used, background/reference samples, preprocessing, target output, and class mapping.
+
+---
+
+## TinyML and Edge Deployment
+
+The project includes the quantized TensorFlow Lite model:
+
+`models/rms_arrhythmia_int8.tflite`
+
+The model is intended for experiments involving lightweight ECG inference on resource-constrained hardware.
+
+### Target Platforms
+
+- **ESP32:** Evaluate compatibility with the selected TensorFlow Lite Micro runtime, supported operators, flash capacity, and available RAM.
+
+### Deployment Validation
+
+Before claiming successful hardware deployment, verify:
+
+- Model loading and interpreter initialization
+- Input tensor shape, data type, scaling, and preprocessing
+- Output tensor interpretation and class mapping
+- Prediction agreement with the reference model
+- Inference latency and peak memory usage
+- Firmware/runtime compatibility and available flash/RAM
+
+A successful `.tflite` conversion alone does not establish that the model runs correctly on an ESP32 or Raspberry Pi. Report hardware results only after running and validating the model on the actual device.
+
+---
 
 ## Dataset
 
-The model work uses the **MIT-BIH Arrhythmia Database**. Use the official PhysioNet page to review its access conditions, citation requirements, and terms:
+This project uses the **MIT-BIH Arrhythmia Database**, distributed through PhysioNet.
 
-- https://physionet.org/content/mitdb/1.0.0/
+Official dataset: https://physionet.org/content/mitdb/1.0.0/
 
+Review the dataset's usage conditions and citation requirements before redistribution. If the dataset archive is included in this repository, confirm that its redistribution is permitted under the applicable terms. Otherwise, provide the official source link and instructions for obtaining it.
 
-## Model files and limitations
+---
 
-- `models/rms_arrhythmia_int8.tflite`: compact INT8 model intended for TinyML inference.
-- `models/RMS_FINAL_MODEL_PACKAGE.zip`: optional package of the RMS model and related artifacts. Inspect its contents and remove duplicate checkpoints, temporary files, or anything not intended for public release.
-- The repository should document the input shape, sample/window length, sampling rate, normalization, output tensor interpretation, class order, quantization scale/zero-point, and expected preprocessing. Do not guess these values; copy them from the actual exported model and inference code.
-- A successful conversion to `.tflite` does **not** by itself prove the model runs on ESP32. Validate operator support, memory, and on-device predictions on the exact board and firmware.
+## Reproducibility and Evaluation
 
-## Reproducibility
+Run the relevant notebooks in Google Colab or a compatible local Python environment. Install the dependencies required by each notebook and use the correct dataset and model paths.
 
-Use the notebooks in `notebooks/` with Google Colab or a compatible Python environment. Install only the dependencies required by the notebook.
+For a reproducible research evaluation, document:
 
-For a public release, record:
-- dataset version and citation;
-- train/validation/test split and leakage-prevention method;
-- class distribution and any resampling such as SMOTE;
-- per-class precision, recall, F1, confusion matrix, and overall metrics;
-- model size and quantization details;
-- hardware, firmware/runtime version, latency, and memory measurements if edge testing has actually been performed.
-  
-## License
+- Dataset version and citation
+- Preprocessing, heartbeat segmentation, and normalization
+- Training, validation, and test split methodology
+- Patient-level separation or other leakage-prevention measures, where applicable
+- Class distribution and any resampling methods used
+- Per-class precision, recall, F1-score, and confusion matrix
+- Overall evaluation metrics and the evaluation dataset
+- Model size, quantization configuration, and inference requirements
+- SHAP explainer configuration and reference samples
+- Hardware specifications and measured deployment results, if tested
 
-The code and project documentation can be licensed under the repository's chosen license. Dataset and third-party model/data rights are separate; a repository license does not override their terms. Review the license file and dataset conditions before publishing.
+---
+
+## Limitations and Research Disclaimer
+
+RMS is an experimental research prototype for ECG classification and explainability. It is **not a certified medical device** and must not be used to diagnose, treat, or make clinical decisions.
+
+Model predictions may be incorrect, and performance on a research dataset does not guarantee performance on unseen patients or real-world ECG recordings. Further validation, independent testing, and appropriate clinical evaluation would be required before any medical application.
+
+---
+
+## License and Attribution
+
+Choose and include a license appropriate for the project code. The MIT-BIH Arrhythmia Database and any third-party software or models may have separate terms and attribution requirements. A repository license does not override those terms.
+
+Please cite the original dataset and relevant model or explainability methods when using this project in research.
